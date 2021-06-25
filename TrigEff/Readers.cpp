@@ -9,7 +9,7 @@ HltObjReader::HltObjReader(TTree* input) : reader(input)
     reader.addInput("mass",&in.mass);
 }
 
-HltobjInput* HltObjReader::readEntry(Long64_t entry)
+const HltobjInput* HltObjReader::readEntry(Long64_t entry)
 {
     reader.readEntry(entry);
     return &in;
@@ -19,9 +19,10 @@ HltanalysisReader::HltanalysisReader(TTree* input) : reader(input)
 {
     reader.addInput("Event",&in.event);
     reader.addInput("Run",&in.run);
+    reader.buildIndex("Event");
 }
 
-HltanalysisInput* HltanalysisReader::readEntry(Long64_t entry)
+const HltanalysisInput* HltanalysisReader::readEntry(Long64_t entry)
 {
     reader.readEntry(entry);
     return &in;
@@ -29,7 +30,7 @@ HltanalysisInput* HltanalysisReader::readEntry(Long64_t entry)
 
 OniaReader::OniaReader(TTree* input): reader(input)
 {
-    in.mom4.reset(new TClonesArray("TLorentzVector"));
+    in.mom4 = new TClonesArray("TLorentzVector");
     reader.addInput("eventNb",&in.event);
     reader.addInput("SumET_HF",&in.sumhf);
     reader.addInput("Reco_mu_size", &in.size);
@@ -37,10 +38,15 @@ OniaReader::OniaReader(TTree* input): reader(input)
     reader.addInput("Reco_mu_nPixWMea",&in.nPixWMea);
     reader.addInput("Reco_mu_dxy",&in.dxy);
     reader.addInput("Reco_mu_dz",&in.dz);
-    reader.addInput("Reco_mu_4mom",&in.mom4);
+    reader.addInput("Reco_mu_4mom",&(in.mom4));
 }
 
-OniaInput* OniaReader::readEntry(Long64_t entry)
+OniaReader::~OniaReader()
+{
+    delete in.mom4;
+}
+
+const OniaInput* OniaReader::readEntry(Long64_t entry)
 {
     reader.readEntry(entry);
     return &in;

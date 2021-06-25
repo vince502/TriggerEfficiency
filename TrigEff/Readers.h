@@ -7,6 +7,8 @@
 
 #include<vector>
 
+const int maxArraySize=100;
+
 struct HltobjInput
 {
     std::vector<float> pt;
@@ -23,7 +25,7 @@ class HltObjReader
     public:
     HltObjReader(TTree* input);
 
-    HltobjInput* readEntry(Long64_t entry);
+    const HltobjInput* readEntry(Long64_t entry);
 
 };
 
@@ -40,21 +42,20 @@ class HltanalysisReader
 
     public:
     HltanalysisReader(TTree* input);
-    HltanalysisInput* readEntry(Long64_t entry);
+    const HltanalysisInput* readEntry(Long64_t entry);
+    Long64_t findEntryByIndex(Long64_t index) {return reader.findEntryByIndex(index);}
 };
-
-
 
 struct OniaInput
 {
     Int_t event;
     Float_t sumhf;
     Int_t size;
-    Int_t nTrkWMea;
-    Int_t nPixWMea;
-    Float_t dxy;
-    Float_t dz;
-    std::unique_ptr<TClonesArray> mom4;
+    Int_t nTrkWMea[maxArraySize];
+    Int_t nPixWMea[maxArraySize];
+    Float_t dxy[maxArraySize];
+    Float_t dz[maxArraySize];
+    TClonesArray* mom4;
 };
 
 class OniaReader
@@ -64,8 +65,9 @@ class OniaReader
 
     public:
     OniaReader(TTree* input);
+    ~OniaReader();
 
-    OniaInput* readEntry(Long64_t entry);
+    const OniaInput* readEntry(Long64_t entry);
 
 };
 

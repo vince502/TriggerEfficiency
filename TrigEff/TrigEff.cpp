@@ -48,8 +48,21 @@ void Process(TTree* oniaTree, TTree* hltobjectTree, TTree* hltanalysisTree)
 
     for(Long64_t i=0;i< oniaEntryNum;i++)
     {
-        const auto oniaInput = onia.readEntry(i);
+        if ((i % 100)==0) cout << "processing entries :" << i << " / " << oniaEntryNum << '\n';
+
+        auto oniaInput = onia.readEntry(i);
+        
+        const Long64_t hltAnIndex=hltAn.findEntryByIndex(oniaInput->event);
+        if (hltAnIndex<0) continue;
+
+        auto analysisInput = hltAn.readEntry(hltAnIndex);
+        auto hltobjInput = hltObj.readEntry(hltAnIndex);
+
+        assert(oniaInput->event == analysisInput->event);
+
     }
+
+    cout << "finished processing "<< oniaEntryNum << " entries\n";
 }
 
 #if !defined(__CLING__)
