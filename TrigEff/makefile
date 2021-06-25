@@ -2,7 +2,7 @@
 FLAGS=$(shell ../HelperScripts/compilerFlags.sh ) -o
 SOURCES:=$(shell find . -name  "*.cpp")
 HEADERS:=$(shell find . -name  "*.h")
-STATICLIBS:=
+STATICLIBS:= ../TreeReader/libTreeReader.a
 INC:=-I $(shell $(ROOTSYS)/bin/root-config --cflags)
 LIBS:=$(shell $(ROOTSYS)/bin/root-config --ldflags --glibs) -lRooFit -lRooFitCore -lMinuit
 OUTPUT:=trigeff
