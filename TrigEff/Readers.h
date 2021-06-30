@@ -50,12 +50,17 @@ struct OniaInput
 {
     Int_t event;
     Float_t sumhf;
-    Int_t size;
-    Int_t nTrkWMea[maxArraySize];
-    Int_t nPixWMea[maxArraySize];
-    Float_t dxy[maxArraySize];
-    Float_t dz[maxArraySize];
-    TClonesArray* mom4;
+    Short_t reco_mu_size;
+    Int_t reco_mu_nTrkWMea[maxArraySize];
+    Int_t reco_mu_nPixWMea[maxArraySize];
+    Int_t reco_mu_SelectionType[maxArraySize];
+    Float_t reco_mu_dxy[maxArraySize];
+    Float_t reco_mu_dz[maxArraySize];
+    TClonesArray* reco_mu_mom4;
+    Short_t reco_QQ_size;
+    TClonesArray* reco_QQ_mom4;
+    Short_t reco_QQ_mumi_idx[maxArraySize];
+    Short_t reco_QQ_mupl_idx[maxArraySize];
 };
 
 class OniaReader
