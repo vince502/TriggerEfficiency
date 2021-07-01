@@ -11,20 +11,18 @@ bool isMatched(const TLorentzVector* recoMuon, const HltobjInput* onMuons)
         if (sqrt(deltaEta*deltaEta+deltaPhi*deltaPhi) < dRthreshold)
         {
             float ptReco= recoMuon->Pt();
-            if (abs(( onMuons->pt->at(i) - ptReco )/ptReco)) 
+            if (abs(( onMuons->pt->at(i) - ptReco )/ptReco) < dPtThreshold) 
                 return true;
         }
     }
     return false;
 }
 
-bool isInAcceptance(const TLorentzVector* muon)
+bool isInAcceptance(float pt, float abseta)
 {
-    float abseta= abs(muon->Eta());
-    float pt= muon->Pt();
-    if (abseta > 2.4) return false;
+    if (abseta > 2.4 ) return false;
     if (abseta < 1.2 ) return pt >3.5;
-    if ((abseta >= 1.2) && (abseta < 2.1)) return pt >= 5.47-1.89*abseta;
+    if (abseta < 2.1 ) return pt >= 5.47-1.89*abseta;
     return pt >1.5;
 }
 
