@@ -65,15 +65,15 @@ void Process(Input* input, Output* output)
     Long64_t oniaEntryNum= input->oniaTree->GetEntries();
     Long64_t entryStep= oniaEntryNum/50;
 
-    for(Long64_t i=0;i< oniaEntryNum;i++)
+    for(Long64_t entry=0;entry< oniaEntryNum;entry++)
     {
-        if ((i % entryStep)==0) cout << "processing entries : " << round((100.0f*i)/oniaEntryNum) << "% " << i << " / " << oniaEntryNum << '\n';
+        if ((entry % entryStep)==0) cout << "processing entries : " << round((100.0f*entry)/oniaEntryNum) << "% " << entry << " / " << oniaEntryNum << '\n';
 
-        const OniaInput* oniaInput = onia.readEntry(i);
+        const OniaInput* oniaInput = onia.readEntry(entry);
         
-        for(int i=0;i<oniaInput->reco_mu_size;i++)
+        for(int iMu=0;iMu<oniaInput->reco_mu_size;iMu++)
         {
-            const TLorentzVector* mu= (TLorentzVector*) oniaInput->reco_mu_mom4->At(i);
+            const TLorentzVector* mu= (TLorentzVector*) oniaInput->reco_mu_mom4->At(iMu);
             const float pt= mu->Pt();
             const float y= mu->Rapidity();
             const float eta= mu->Eta();
@@ -81,7 +81,7 @@ void Process(Input* input, Output* output)
 
             if (!isInAcceptance(pt,abs(eta))) continue;
 
-            if (!isPassQualityCuts(oniaInput,i)) continue;
+            if (!isPassQualityCuts(oniaInput,iMu)) continue;
 
             //Passed acceptance and quality cuts
             total.output.pt=pt;
