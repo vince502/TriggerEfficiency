@@ -5,7 +5,7 @@ HEADERS:=$(shell find . -name  "*.h")
 STATICLIBS:=
 INC:=-I $(shell $(ROOTSYS)/bin/root-config --cflags)
 LIBS:=$(shell $(ROOTSYS)/bin/root-config --ldflags --glibs) -lRooFit -lRooFitCore -lMinuit
-OUTPUT:=libTreeReader
+OUTPUT:=libTreeIO
 
 all : ${OUTPUT}.a
 

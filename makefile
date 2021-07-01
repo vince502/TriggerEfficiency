@@ -2,16 +2,16 @@
 .PHONY: TrigEff
 
 all:
-	$(MAKE) -C TreeReader
+	$(MAKE) -C TreeIO
 	$(MAKE) -C TrigEff
 
 clear:
-	$(MAKE) clear -C TreeReader
+	$(MAKE) clear -C TreeIO
 	$(MAKE) clear -C TrigEff
 
 
 TrigEff:
 	$(MAKE) -C TrigEff
 
-TreeReader:
-	$(MAKE) -C TreeReader
+TreeIO:
+	$(MAKE) -C TreeIO

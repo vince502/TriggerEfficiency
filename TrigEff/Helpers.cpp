@@ -3,15 +3,15 @@
 
 bool isMatched(const TLorentzVector* recoMuon, const HltobjInput* onMuons)
 {
-    int onlineMuonSize= onMuons->eta.size();
+    int onlineMuonSize= onMuons->eta->size();
     for (int i=0;i<onlineMuonSize;i++)
     {
-        float deltaEta= recoMuon->Eta() - onMuons->eta[i];
-        float deltaPhi= recoMuon->Phi() - onMuons->phi[i];
+        float deltaEta= recoMuon->Eta() - onMuons->eta->at(i);
+        float deltaPhi= recoMuon->Phi() - onMuons->phi->at(i);
         if (sqrt(deltaEta*deltaEta+deltaPhi*deltaPhi) < dRthreshold)
         {
             float ptReco= recoMuon->Pt();
-            if (abs(( onMuons->pt[i] - ptReco )/ptReco)) 
+            if (abs(( onMuons->pt->at(i) - ptReco )/ptReco)) 
                 return true;
         }
     }

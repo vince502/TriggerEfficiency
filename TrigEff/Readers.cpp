@@ -3,10 +3,23 @@
 
 HltObjReader::HltObjReader(TTree* input) : reader(input)
 {
+    in.eta= new std::vector<float>();
+    in.pt= new std::vector<float>();
+    in.phi= new std::vector<float>();
+    in.mass= new std::vector<float>();
+
     reader.addInput("eta",&in.eta);
     reader.addInput("pt",&in.pt);
     reader.addInput("phi",&in.phi);
     reader.addInput("mass",&in.mass);
+}
+
+HltObjReader::~HltObjReader()
+{
+    delete in.eta;
+    delete in.pt;
+    delete in.phi;
+    delete in.mass;
 }
 
 const HltobjInput* HltObjReader::readEntry(Long64_t entry)
@@ -35,6 +48,7 @@ OniaReader::OniaReader(TTree* input): reader(input)
 
     reader.addInput("eventNb",&in.event);
     reader.addInput("SumET_HF",&in.sumhf);
+    reader.addInput("Centrality",&in.centrality);
 
     reader.addInput("Reco_mu_size", &in.reco_mu_size);
     reader.addInput("Reco_mu_nTrkWMea",&in.reco_mu_nTrkWMea);

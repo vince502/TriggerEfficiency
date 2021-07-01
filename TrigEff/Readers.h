@@ -1,7 +1,7 @@
 #ifndef READERS
 #define READERS
 
-#include"../TreeReader/TreeReader.h"
+#include"../TreeIO/TreeReader.h"
 
 #include"TClonesArray.h"
 
@@ -11,10 +11,10 @@ const int maxArraySize=100;
 
 struct HltobjInput
 {
-    std::vector<float> pt;
-    std::vector<float> eta;
-    std::vector<float> phi;
-    std::vector<float> mass;
+    std::vector<float>* pt;
+    std::vector<float>* eta;
+    std::vector<float>* phi;
+    std::vector<float>* mass;
 };
 
 class HltObjReader
@@ -24,6 +24,7 @@ class HltObjReader
 
     public:
     HltObjReader(TTree* input);
+    ~HltObjReader();
 
     const HltobjInput* readEntry(Long64_t entry);
 
@@ -50,6 +51,7 @@ struct OniaInput
 {
     Int_t event;
     Float_t sumhf;
+    Int_t centrality;
     Short_t reco_mu_size;
     Int_t reco_mu_nTrkWMea[maxArraySize];
     Int_t reco_mu_nPixWMea[maxArraySize];

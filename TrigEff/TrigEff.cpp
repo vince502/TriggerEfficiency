@@ -2,18 +2,21 @@
 #include"TrigEff.h"
 #include"Utils.h"
 #include"Readers.h"
+#include"Writers.h"
 #include"Helpers.h"
 
 #include<iostream>
 
 #include"TFile.h"
+#include"TEfficiency.h"
 
 using std::cout;
 using std::cerr;
 
-Output Process(TTree* oniaTree, TTree* hltobjectTree, TTree* hltanalysisTree);
+void Process(Input* input, Output* output);
 
 Output allocateOutput();
+void produceOutput(HistPair out, const std::string& outputpath);
 
 void TrigEff(const char* oniaFilename, const char* triggerFilename, const char* triggerName, const char* outputFilename)
 {
@@ -28,43 +31,62 @@ void TrigEff(const char* oniaFilename, const char* triggerFilename, const char* 
 
     TFile* outputFile = CreateFile(outFilename+"/output.root");
 
-    //access trees
+    //init inputs
+    Input input;
 
-    TTree* oniaTree =OpenTree(oniaFile,oniaTreeName);
-    TTree* hltanalysisTree=OpenTree(triggerFile,hltanalysisTreeName);
+    input.oniaTree =OpenTree(oniaFile,oniaTreeName);
+    input.hltanalysisTree=OpenTree(triggerFile,hltanalysisTreeName);
 
     std::string triggerPath=std::string(hltobjDirectoryName)+triggerName;
-    TTree* hltobjectTree=OpenTree(triggerFile,triggerPath.data());
+    input.hltobjectTree=OpenTree(triggerFile,triggerPath.data());
 
-    if ((oniaTree==nullptr) || (hltanalysisTreeName==nullptr) || (hltobjectTree==nullptr))
+    if ((input.oniaTree==nullptr) || (input.hltanalysisTree==nullptr) || (input.hltobjectTree==nullptr))
         return;
 
-    Output out= Process(oniaTree,hltobjectTree,hltanalysisTree);
-    out.num_y->Write();
-    out.num_pt->Write();
-    out.den_y->Write();
-    out.den_pt->Write();
+    //init outputs
+    Output output=allocateOutput();
+
+    Process(&input,&output);
+
+    output.pass->Write();
+    output.total->Write();
+
+    //produceOutput(out.y,outFilename);
+    //produceOutput(out.pt,outFilename);
+    //produceOutput(out.cent,outFilename);
+    //produceOutput(out.pt_fwd,outFilename);
+    //produceOutput(out.pt_mid,outFilename);
 
     cout << "Success.\n";
 }
 
-Output Process(TTree* oniaTree, TTree* hltobjectTree, TTree* hltanalysisTree)
+void Process(Input* input, Output* output)
 {
-    OniaReader onia(oniaTree);
-    HltObjReader hltObj(hltobjectTree);
-    HltanalysisReader hltAn(hltanalysisTree);
-    Output output=allocateOutput();
+    OniaReader onia(input->oniaTree);
+    HltObjReader hltObj(input->hltobjectTree);
+    HltanalysisReader hltAn(input->hltanalysisTree);
 
-    Long64_t oniaEntryNum= oniaTree->GetEntries();
+    OniaWriter total(output->total);
+    OniaWriter pass(output->pass);
+    
+    Long64_t oniaEntryNum= input->oniaTree->GetEntries();
+    Long64_t entryStep= oniaEntryNum/50;
 
     for(Long64_t i=0;i< oniaEntryNum;i++)
     {
-        if ((i % 10000)==0) cout << "processing entries :" << i << " / " << oniaEntryNum << '\n';
+        if ((i % entryStep)==0) cout << "processing entries : " << round((100.0f*i)/oniaEntryNum) << "% " << i << " / " << oniaEntryNum << '\n';
 
         auto oniaInput = onia.readEntry(i);
         
         for(int i=0;i<oniaInput->reco_QQ_size;i++)
         {
+            const TLorentzVector* onia= (TLorentzVector*) oniaInput->reco_QQ_mom4->At(i);
+            const float pt= onia->Pt();
+            const float y= onia->Rapidity();
+            const int cent= oniaInput->centrality;
+
+            if (abs(y) >2.4) continue;
+
             int mupl_idx = oniaInput->reco_QQ_mupl_idx[i];
             int mumi_idx = oniaInput->reco_QQ_mumi_idx[i];
 
@@ -76,12 +98,26 @@ Output Process(TTree* oniaTree, TTree* hltobjectTree, TTree* hltanalysisTree)
 
             if (!isPassQualityCuts(oniaInput,i)) continue;
 
-            const TLorentzVector* onia= (TLorentzVector*) oniaInput->reco_QQ_mom4->At(i);
-            float pt= onia->Pt();
-            float y= onia->Rapidity();
+            //Passed acceptance and quality cuts
+            total.output.pt=pt;
+            total.output.y=y;
+            total.output.cent = cent;
+            total.output.m= onia->M();
+            total.output.eta=onia->Eta();
+            total.writeEntry();
 
-            output.den_pt->Fill(pt);
-            output.den_y->Fill(y);
+            output->pt.den->Fill(pt);
+            output->y.den->Fill(y);
+            output->cent.den->Fill(cent);
+
+            bool isFwd=abs(y) > endcapRap;
+
+            if (isFwd) 
+                output->pt_fwd.den->Fill(pt);
+            else
+                output->pt_mid.den->Fill(pt);
+
+            //read hltobj
 
             const Long64_t hltAnIndex=hltAn.findEntryByIndex(oniaInput->event);
             if (hltAnIndex<0) continue;
@@ -93,31 +129,69 @@ Output Process(TTree* oniaTree, TTree* hltobjectTree, TTree* hltanalysisTree)
 
             if (isMatched(mupl,hltobjInput) && isMatched(mumi,hltobjInput))
             {
-                output.num_pt->Fill(pt);
-                output.num_y->Fill(y);
+                output->pt.num->Fill(pt);
+                output->y.num->Fill(y);
+                output->cent.num->Fill(cent);
+                if (isFwd)
+                    output->pt_fwd.num->Fill(pt);
+                else
+                    output->pt_mid.num->Fill(pt);
+
+                pass.output= total.output;
+                pass.writeEntry();
             }
         }
-
     }
 
     cout << "finished processing "<< oniaEntryNum << " entries\n";
-
-    return output;
 }
 
 Output allocateOutput()
 {
     Output out;
-    out.den_pt= new TH1F("den_pt", histogramPtTitle, ptBins.size()-1, ptBins.data());
-    out.den_pt->Sumw2();
-    out.den_y = new TH1F("den_y", histogramYTitle,yBins.size()-1, yBins.data());
-    out.den_y->Sumw2();
-    out.num_pt= new TH1F("num_pt",histogramPtTitle,ptBins.size()-1,ptBins.data());
-    out.num_pt->Sumw2();
-    out.num_y = new TH1F("num_y", histogramYTitle,yBins.size(),yBins.data());
-    out.num_y->Sumw2();
+    out.pt.den= new TH1F("den_pt", histogramPtTitle, ptBins.size()-1, ptBins.data());
+    out.pt.den->Sumw2();
+    out.pt.num= new TH1F("num_pt",histogramPtTitle,ptBins.size()-1,ptBins.data());
+    out.pt.num->Sumw2();
+    out.y.den = new TH1F("den_y", histogramYTitle,yBins.size()-1, yBins.data());
+    out.y.den->Sumw2();
+    out.y.num = new TH1F("num_y", histogramYTitle,yBins.size()-1,yBins.data());
+    out.y.num->Sumw2();
+
+    out.cent.num= new TH1F("num_cent",histogramCentTitle,200,0,200);
+    out.cent.num->Sumw2();
+    out.cent.den= new TH1F("den_cent",histogramCentTitle,200,0,200);
+    out.cent.den->Sumw2();
+
+    out.pt_fwd.den= new TH1F("den_pt_fwd", histogramPtTitle, ptBins.size()-1, ptBins.data());
+    out.pt_fwd.den->Sumw2();
+    out.pt_fwd.num= new TH1F("num_pt_fwd",histogramPtTitle,ptBins.size()-1,ptBins.data());
+    out.pt_fwd.num->Sumw2();
+    out.pt_mid.den= new TH1F("den_pt_mid", histogramPtTitle, ptBins.size()-1, ptBins.data());
+    out.pt_mid.den->Sumw2();
+    out.pt_mid.num= new TH1F("num_pt_mid",histogramPtTitle,ptBins.size()-1,ptBins.data());
+    out.pt_mid.num->Sumw2();
+
+    out.pass = new TTree("pass","passing dimuons");
+    out.total = new TTree("total","total dimuons");
 
     return out;
+}
+
+void produceOutput(HistPair out, const std::string& outputpath)
+{
+    TEfficiency eff(*out.num,*out.den);
+    const std::string num_outputfilename=outputpath+"/output_"+out.num->GetName()+".pdf";
+    const std::string den_outputfilename=outputpath+"/output_"+out.den->GetName()+".pdf";
+    const std::string eff_outputfilename=outputpath+"/output_eff_"+eff.GetName()+".pdf";
+
+    out.num->Write();
+    out.den->Write();
+    eff.Write();
+
+    out.num->SaveAs(num_outputfilename.data());
+    out.den->SaveAs(den_outputfilename.data());
+    eff.SaveAs(eff_outputfilename.data());
 }
 
 #if !defined(__CLING__)

@@ -2,12 +2,12 @@
 FLAGS=$(shell ../HelperScripts/compilerFlags.sh ) -o
 SOURCES:=$(shell find . -name  "*.cpp")
 HEADERS:=$(shell find . -name  "*.h")
-STATICLIBS:= ../TreeReader/libTreeReader.a
+STATICLIBS:= ../TreeIO/libTreeIO.a
 INC:=-I $(shell $(ROOTSYS)/bin/root-config --cflags)
 LIBS:=$(shell $(ROOTSYS)/bin/root-config --ldflags --glibs) -lRooFit -lRooFitCore -lMinuit
 OUTPUT:=trigeff
 
-acceff : ${SOURCES} ${HEADERS} ${STATICLIBS}
+${OUTPUT} : ${SOURCES} ${HEADERS} ${STATICLIBS}
 	g++ ${SOURCES} ${STATICLIBS} ${INC} ${LIBS} ${FLAGS} ${OUTPUT}
 	objdump $(shell ../HelperScripts/objdumpFlags.sh) ${OUTPUT} > ${OUTPUT}.s
 
