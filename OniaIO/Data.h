@@ -23,7 +23,7 @@ struct HltobjInput
 
 struct HltanalysisInput
 {
-    Int_t event;
+    Long64_t event;
     Int_t run;
     void registerInput(TreeReader* reader);
 };

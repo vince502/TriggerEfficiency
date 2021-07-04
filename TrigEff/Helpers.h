@@ -9,7 +9,15 @@
 const float dRthreshold = 0.3f;
 const float dPtThreshold = 0.3f;
 
-bool isMatched(const TLorentzVector* recoMuon, const HltobjInput* onMuons);
+struct HltobjEntry
+{
+    std::vector<float> pt;
+    std::vector<float> eta;
+    std::vector<float> phi;
+    std::vector<float> mass;
+};
+
+bool isMatched(const TLorentzVector* recoMuon, const HltobjEntry* onMuons);
 bool isInAcceptance(float pt, float abseta);
 bool isPassQualityCuts(const OniaInput* in, int index);
 

@@ -5,14 +5,17 @@
 #include"Helpers.h"
 
 #include<iostream>
+#include<unordered_map>
 
 #include"TFile.h"
 #include"TEfficiency.h"
 
 using std::cout;
 using std::cerr;
+using HltIndex=std::unordered_map<Long64_t,HltobjEntry>;
 
 void Process(Input* input, Output* output);
+HltIndex generateIndexer(Input* input);
 
 Output allocateOutput();
 
@@ -52,13 +55,50 @@ void TrigEff(const char* oniaFilename, const char* triggerFilename, const char* 
     cout << "Success.\n";
 }
 
-void Process(Input* input, Output* output)
+HltIndex generateIndexer(Input* input)
 {
-    Reader<OniaInput> onia(input->oniaTree);
+    HltIndex indexer;
     Reader<HltobjInput> hltObj(input->hltobjectTree);
     Reader<HltanalysisInput> hltAn(input->hltanalysisTree);
 
-    hltAn.buildIndex("Event");
+    Long64_t entryNum= input->hltanalysisTree->GetEntries();
+
+    indexer.reserve(entryNum);
+
+    std::cout << "indexing events..\n";
+    long long repeatedEvents=0;
+
+    for(Long64_t entry=0;entry < entryNum;entry++)
+    {
+        const HltanalysisInput* analysisInput = hltAn.readEntry(entry);
+        const HltobjInput* hltobjInput = hltObj.readEntry(entry);
+
+        auto item= indexer.emplace(analysisInput->event,HltobjEntry());
+        
+        if(!item.second)
+        {
+            repeatedEvents++;
+        }
+
+        HltobjEntry* hltentry= &(item.first->second);
+        hltentry->eta=*(hltobjInput->eta);
+        hltentry->mass=*(hltobjInput->mass);
+        hltentry->phi=*(hltobjInput->phi);
+        hltentry->pt=*(hltobjInput->pt);
+    }
+
+    std::cout << "Indexing finished, index generated :" << entryNum-repeatedEvents << "\n";
+    std::cout << "repeated events: " << repeatedEvents << "\n"; 
+    return indexer;
+
+}
+
+void Process(Input* input, Output* output)
+{
+    Reader<OniaInput> onia(input->oniaTree);
+
+    const HltIndex indexer= generateIndexer(input);
+
     Writer<OniaOutput> total(output->total);
     Writer<OniaOutput> pass(output->pass);
     
@@ -79,6 +119,8 @@ void Process(Input* input, Output* output)
             const float eta= mu->Eta();
             const int cent= oniaInput->centrality;
 
+            if (pt>100.0f) continue;
+
             if (!isInAcceptance(pt,abs(eta))) continue;
 
             if (!isPassQualityCuts(oniaInput,iMu)) continue;
@@ -91,17 +133,11 @@ void Process(Input* input, Output* output)
             total.output.eta=eta;
             total.writeEntry();
 
-            //read hltobj
+            //read hltobj, if not found, continue
+            const auto hltobjFound= indexer.find(oniaInput->event);
+            if (hltobjFound== indexer.end()) continue;
 
-            const Long64_t hltAnIndex=hltAn.findEntryByIndex(oniaInput->event);
-            if (hltAnIndex<0) continue;
-
-            const HltanalysisInput* analysisInput = hltAn.readEntry(hltAnIndex);
-            const HltobjInput* hltobjInput = hltObj.readEntry(hltAnIndex);
-
-            assert(oniaInput->event == analysisInput->event);
-
-            if (isMatched(mu,hltobjInput))
+            if (isMatched(mu,&(hltobjFound->second)))
             {
                 pass.output= total.output;
                 pass.writeEntry();

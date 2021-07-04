@@ -1,17 +1,19 @@
 
 #include"Helpers.h"
 
-bool isMatched(const TLorentzVector* recoMuon, const HltobjInput* onMuons)
+bool isMatched(const TLorentzVector* recoMuon, const HltobjEntry* onMuons)
 {
-    int onlineMuonSize= onMuons->eta->size();
+    int onlineMuonSize= onMuons->eta.size();
+    float eta=recoMuon->Eta();
+    float phi=recoMuon->Phi();
+    float pt=recoMuon->Pt();
     for (int i=0;i<onlineMuonSize;i++)
     {
-        float deltaEta= recoMuon->Eta() - onMuons->eta->at(i);
-        float deltaPhi= recoMuon->Phi() - onMuons->phi->at(i);
+        float deltaEta= eta - onMuons->eta[i];
+        float deltaPhi= phi - onMuons->phi[i];
         if (sqrt(deltaEta*deltaEta+deltaPhi*deltaPhi) < dRthreshold)
         {
-            float ptReco= recoMuon->Pt();
-            if (abs(( onMuons->pt->at(i) - ptReco )/ptReco) < dPtThreshold) 
+            if (abs(( onMuons->pt[i] - pt )/pt) < dPtThreshold) 
                 return true;
         }
     }
