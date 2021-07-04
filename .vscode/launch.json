@@ -13,7 +13,7 @@
                 "../rootfiles/datasets/Run3Pre_dilepton/Oniatree_MC_miniAOD_PG_Pt_3_100_5p02TeV_cmssw11_2_2_Run3Cond_merged.root",
                 "../rootfiles/datasets/Run3Prep_DileptonHLT_2021/openHLT_Run3HLT_Dilepton_MC_Pt_0p5_100.root",
                 "HLT_HIL1SingleMu0_v1",
-                "../rootfiles/analysis/triggerStudy/test/HLT_HIL1SingleMu0_v1"
+                "../rootfiles/analysis/triggerStudy/test/HLT_HIL1SingleMu0_v1",
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

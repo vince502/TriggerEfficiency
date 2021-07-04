@@ -41,18 +41,22 @@ void TrigEff(const char* oniaFilename, const char* triggerFilename, const char* 
     std::string triggerPath=std::string(hltobjDirectoryName)+triggerName;
     input.hltobjectTree=OpenTree(triggerFile,triggerPath.data());
 
-    if ((input.oniaTree==nullptr) || (input.hltanalysisTree==nullptr) || (input.hltobjectTree==nullptr))
-        return;
+    if ((input.oniaTree!=nullptr) && (input.hltanalysisTree!=nullptr) && (input.hltobjectTree!=nullptr))
+    {
+        //init outputs
+        Output output=allocateOutput();
 
-    //init outputs
-    Output output=allocateOutput();
+        Process(&input,&output);
 
-    Process(&input,&output);
+        output.pass->Write();
+        output.total->Write();
 
-    output.pass->Write();
-    output.total->Write();
+        cout << "Success.\n";
+    }
 
-    cout << "Success.\n";
+    delete oniaFile;
+    delete triggerFile;
+    delete outputFile;
 }
 
 HltIndex generateIndexer(Input* input)

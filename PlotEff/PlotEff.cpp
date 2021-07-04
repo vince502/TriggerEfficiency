@@ -10,16 +10,22 @@ void produceOutput(HistPair out, const std::string& outputpath);
 void produceOutput(Hist2Pair out, const std::string& outputpath);
 void readTotals(TFile* inputFile, Output* out);
 void readPass(TFile* inputFile, Output* output);
-Output allocateOutput();
+Output allocateOutput(bool highPt);
 
-void PlotEff(const char* inputfilename, const char* outputFilename)
+void PlotEff(const char* inputfilename, const char* outputFilename, const char* ptRange)
 {
     std::string outFilename=outputFilename;
 
     TFile* inputFile= OpenFile(inputfilename);
     if (inputFile==nullptr) return;
 
-    Output output=allocateOutput();
+    bool isHighPt=std::string(ptRange)!="lowpt";
+    if (isHighPt)
+        std::cout << "in high pt range.\n";
+    else
+        std::cout << "in low pt range.\n";
+
+    Output output=allocateOutput(isHighPt);
 
     readTotals(inputFile,&output);
     readPass(inputFile,&output);
@@ -30,6 +36,8 @@ void PlotEff(const char* inputfilename, const char* outputFilename)
     produceOutput(output.pt_fwd,outFilename);
     produceOutput(output.pt_mid,outFilename);
     produceOutput(output.pt_y,outFilename);
+
+    delete inputFile;
 }
 
 void readTotals(TFile* inputFile, Output* output)
@@ -74,31 +82,33 @@ void readPass(TFile* inputFile, Output* output)
     }
 }
 
-Output allocateOutput()
+Output allocateOutput(bool highPt)
 {
     Output out;
-    out.pt.den= createTH1("den_pt", "denominator vs pt", &ptBins);
-    out.pt.num= createTH1("num_pt", "numerator vs pt",&ptBins);
+    const std::vector<double>& ptBins= (highPt ? ptBinsHigh : ptBinsLow);
+
+    out.pt.den= createTH1("den_pt", "denominator vs pt", ptBins);
+    out.pt.num= createTH1("num_pt", "numerator vs pt",ptBins);
     out.pt.xlabel=histPtLabel;
 
-    out.y.den = createTH1("den_y", "denominator vs y",&yBins);
-    out.y.num = createTH1("num_y", "numerator vs y",&yBins);
+    out.y.den = createTH1("den_y", "denominator vs y",yBins);
+    out.y.num = createTH1("num_y", "numerator vs y",yBins);
     out.y.xlabel=histYLabel;
 
-    out.cent.num= createTH1("num_cent","denominator vs centrality",&centBins);
-    out.cent.den= createTH1("den_cent","numerator vs centrality",&centBins);
+    out.cent.num= createTH1("num_cent","denominator vs centrality",centBins);
+    out.cent.den= createTH1("den_cent","numerator vs centrality",centBins);
     out.cent.xlabel=histCentLabel;
 
-    out.pt_fwd.den= createTH1("den_pt_fwd", "forward : denominator vs pt", &ptBins);
-    out.pt_fwd.num= createTH1("num_pt_fwd", "forward : numerator vs pt",&ptBins);
+    out.pt_fwd.den= createTH1("den_pt_fwd", "forward : denominator vs pt", ptBins);
+    out.pt_fwd.num= createTH1("num_pt_fwd", "forward : numerator vs pt",ptBins);
     out.pt_fwd.xlabel=histPtLabel;
 
-    out.pt_mid.den= createTH1("den_pt_mid", "mid barrel: denominator vs pt", &ptBins);
-    out.pt_mid.num= createTH1("num_pt_mid", "mid barrel: numerator vs pt",&ptBins);
+    out.pt_mid.den= createTH1("den_pt_mid", "mid barrel: denominator vs pt", ptBins);
+    out.pt_mid.num= createTH1("num_pt_mid", "mid barrel: numerator vs pt",ptBins);
     out.pt_mid.xlabel=histPtLabel;
 
-    out.pt_y.den =createTH2("den_pt_y", "denominator vs pt,y",&yBins,&ptBins);
-    out.pt_y.num=createTH2("num_pt_y","numerator vs pt,y",&yBins,&ptBins);
+    out.pt_y.den =createTH2("den_pt_y", "denominator vs pt,y",yBins,ptBins);
+    out.pt_y.num=createTH2("num_pt_y","numerator vs pt,y",yBins,ptBins);
     out.pt_y.xlabel=histYLabel;
     out.pt_y.ylabel=histPtLabel;
 
@@ -138,10 +148,10 @@ void produceOutput(Hist2Pair out, const std::string& outputpath)
 
 int main(int argc, char **argv)
 {
-    if (argc==3)
-        PlotEff(argv[1],argv[2]);
+    if (argc==4)
+        PlotEff(argv[1],argv[2],argv[3]);
     else
-        std::cerr << "Wrong number of parameters:\nUsage:\ninput , output\n";
+        std::cerr << "Wrong number of parameters:\nUsage:\ninput , output, {lowpt,highpt}\n";
     return 0;
 }
 

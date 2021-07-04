@@ -1,12 +1,14 @@
 
 #path to reco file
-ONIAFILEPATH="../rootfiles/datasets/Run3Pre_dilepton/Oniatree_MC_miniAOD_PG_Pt_0p5_3_5p02TeV_cmssw11_2_2_Run3Cond_merged.root"
+ONIAFILEPATH="../rootfiles/datasets/Run3Pre_dilepton/Oniatree_MC_miniAOD_PG_Pt_3_100_Hydjet_5p02TeV_cmssw11_2_2_Run3Cond_merged.root"
 #path to trigger file
 TRIGGERFILEPATH="../rootfiles/datasets/Run3Prep_DileptonHLT_2021/openHLT_Run3HLT_Dilepton_MC_Pt_0p5_100.root"
 #list of triggers to process, listed in file triggers.txt
 TRIGGERS=$( cat triggers.txt )
 #path to directory to place output
 OUTPUTPATH="../rootfiles/analysis/triggerStudy"
+#file is low pt or high pt
+PTRANGE="highpt"
 #maximum number of cores/threads to use simultaneusly, one core/thread process one trigger
 MAXJOBS=7
 
@@ -28,7 +30,7 @@ do
     OUTPATH="${OUTPUTPATH}/$( basename ${ONIAFILEPATH%.*})/${TRIGGERNAME}"
     mkdir -p $OUTPATH
     echo "processing ${TRIGGERNAME}"
-    ./trigeff.sh ${ONIAFILEPATH} ${TRIGGERFILEPATH} ${TRIGGERNAME} $OUTPATH &> "${OUTPATH}/output.log"  &
+    ./trigeff.sh ${ONIAFILEPATH} ${TRIGGERFILEPATH} ${TRIGGERNAME} $OUTPATH $PTRANGE &> "${OUTPATH}/output.log"  &
     JOBS=( $(jobs -p) )
     JOBNUM="${#JOBS[@]}"
     if [ $MAXJOBS = $JOBNUM ]

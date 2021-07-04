@@ -19,7 +19,7 @@ void writeToCanvas(TH1* hist,const std::string& xname,const std::string& yname, 
 void writeToCanvas(TEfficiency* hist,const std::string& xname,const std::string& yname, const std::string& outname);
 void writeToCanvas2D(TEfficiency* hist,const std::string& xname,const std::string& yname, const std::string& outname);
 
-TH1* createTH1(const std::string& name,const std::string& title, const std::vector<double>* bins);
-TH2* createTH2(const std::string& name,const std::string& title, const std::vector<double>* xbins, const std::vector<double>* ybins);
+TH1* createTH1(const std::string& name,const std::string& title, const std::vector<double>& bins);
+TH2* createTH2(const std::string& name,const std::string& title, const std::vector<double>& xbins, const std::vector<double>& ybins);
 
 #endif
