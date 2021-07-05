@@ -62,6 +62,8 @@ void writeToCanvas(TEfficiency* hist,const std::string& xname,const std::string&
     TPad pad("pad","fit", padSizes[0], padSizes[1], padSizes[2], padSizes[3]);
     pad.Draw();
     pad.cd();
+    std::string title= std::string(hist->GetName())+';'+xname+';'+yname;
+    hist->SetTitle(title.data());
     hist->Draw();
     canvas.SaveAs(outputFilename.data());
 }
@@ -75,6 +77,8 @@ void writeToCanvas2D(TEfficiency* hist,const std::string& xname,const std::strin
     TPad pad("pad","fit", padSizes[0], padSizes[1], padSizes[2], padSizes[3]);
     pad.Draw();
     pad.cd();
+    std::string title= std::string(hist->GetName())+';'+xname+';'+yname;
+    hist->SetTitle(title.data());
     hist->Draw("COLZ");
     canvas.SaveAs(outputFilename.data());
 }

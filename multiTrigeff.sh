@@ -12,22 +12,23 @@ PTRANGE="highpt"
 #maximum number of cores/threads to use simultaneusly, one core/thread process one trigger
 MAXJOBS=7
 
+OUTPUTDIR="${OUTPUTPATH}/$( basename ${ONIAFILEPATH%.*})"
+
 mkdir -p ${OUTPUTPATH}
 
-echo "Full Trigger efficiency study"
+echo "Full HLT Trigger efficiency study"
 
 #do the processing
 
 echo "processing..."
-
 echo "reading reco file '${ONIAFILEPATH}'"
 echo "reading hltobj file '${TRIGGERFILEPATH}'"
 echo "output to:"
-echo "  ${OUTPUTPATH}/$( basename $ONIAFILEPATH)"
+echo "  ${OUTPUTDIR}"
 
 for TRIGGERNAME in $TRIGGERS
 do
-    OUTPATH="${OUTPUTPATH}/$( basename ${ONIAFILEPATH%.*})/${TRIGGERNAME}"
+    OUTPATH="${OUTPUTDIR}/${TRIGGERNAME}"
     mkdir -p $OUTPATH
     echo "processing ${TRIGGERNAME}"
     ./trigeff.sh ${ONIAFILEPATH} ${TRIGGERFILEPATH} ${TRIGGERNAME} $OUTPATH $PTRANGE &> "${OUTPATH}/output.log"  &
@@ -39,4 +40,9 @@ do
     fi
 done
 wait
+
+mkdir "${OUTPUTDIR}/report"
+cp "HelperScripts/exampleReport.tex" "${OUTPUTDIR}/report/presentation.tex"
+cd "${OUTPUTDIR}/report"
+pdflatex -interaction batchmode "presentation.tex"
 echo "all done"

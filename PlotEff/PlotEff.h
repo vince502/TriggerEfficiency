@@ -38,18 +38,18 @@ const std::vector<double> ptBinsLow=[]()
 const std::vector<double> ptBinsHigh=[]()
 {
     std::vector<double> out;
-    for(int i=3;i<100;i+=5) out.push_back(i);
+    for(int i=3;i<105;i+=5) out.push_back(i);
     return out;
 }();
 const std::vector<double> yBins { -2.4, -2.0,-1.5,-1.0,-0.5,0.0,0.5,1.0,1.5,2.0,2.4 };
 const std::vector<double> centBins=[]()
 {
     std::vector<double> out;
-    for(int i=0;i<200;i+=10) out.push_back(i);
+    for(int i=0;i<210;i+=10) out.push_back(i);
     return out;
 }();
-const char histPtLabel[]="p_{t}^{#mu#mu}(GeV/c)";
-const char histYLabel[]="y^{#mu#mu}";
+const char histPtLabel[]="p_{t}^{#mu}(GeV/c)";
+const char histYLabel[]="y^{#mu}";
 const char histCentLabel[]="Centrality";
 
 const float endcapRap=1.6f;
