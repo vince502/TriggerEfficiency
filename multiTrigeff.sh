@@ -1,19 +1,21 @@
 
 #path to reco file
 ONIAFILEPATH="../rootfiles/datasets/Run3Pre_dilepton/Oniatree_MC_miniAOD_PG_Pt_3_100_Hydjet_5p02TeV_cmssw11_2_2_Run3Cond_merged.root"
-#path to trigger file
+#path to hltobj triggers file
 TRIGGERFILEPATH="../rootfiles/datasets/Run3Prep_DileptonHLT_2021/openHLT_Run3HLT_Dilepton_MC_Pt_0p5_100.root"
+#path to directory to place output
+OUTPUTPATH="../rootfiles/analysis/triggerStudy"
+#reco file is low pt or high pt : "lowpt" or "highpt"
+PTRANGE="highpt"
+#maximum number of cores/threads to use simultaneusly, one core/thread process one trigger
+MAXJOBS=7
+
+
 #list of triggers to process, listed in file triggersLx.txt
 TRIGGERSL1=$( cat triggersL1.txt )
 TRIGGERSL2=$( cat triggersL2.txt )
 TRIGGERSL3=$( cat triggersL3.txt )
 TRIGGERS=( ${TRIGGERSL1[@]} ${TRIGGERSL2[@]} ${TRIGGERSL3[@]} )
-#path to directory to place output
-OUTPUTPATH="../rootfiles/analysis/triggerStudy"
-#file is low pt or high pt
-PTRANGE="highpt"
-#maximum number of cores/threads to use simultaneusly, one core/thread process one trigger
-MAXJOBS=7
 
 OUTPUTDIR="${OUTPUTPATH}/$( basename ${ONIAFILEPATH%.*})"
 
