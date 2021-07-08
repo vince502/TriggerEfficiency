@@ -1,6 +1,8 @@
 
-#include"PlotEff.h"
 #include"TEfficiency.h"
+
+#include"PlotEff.h"
+#include"MultiPlotEff.h"
 #include"../OniaIO/OniaIO.h"
 #include"../Utils/Utils.h"
 
@@ -18,6 +20,8 @@ void PlotEff(const char* inputfilename, const char* outputFilename, const char* 
 
     TFile* inputFile= OpenFile(inputfilename);
     if (inputFile==nullptr) return;
+
+    TFile* outputFile= CreateFile(outFilename+"/hist.root");
 
     bool isHighPt=std::string(ptRange)!="lowpt";
     if (isHighPt)
@@ -38,6 +42,7 @@ void PlotEff(const char* inputfilename, const char* outputFilename, const char* 
     produceOutput(output.pt_y,outFilename);
 
     delete inputFile;
+    delete outputFile;
 }
 
 void readTotals(TFile* inputFile, Output* output)
@@ -127,6 +132,10 @@ void produceOutput(HistPair out, const std::string& outputpath)
     writeToCanvas(out.num,out.xlabel,ylabel,outputfilename);
     writeToCanvas(out.den,out.xlabel,ylabel,outputfilename);
     writeToCanvas(&eff,out.xlabel,"Efficiency",outputfilename);
+
+    out.num->Write();
+    out.den->Write();
+    eff.Write();
 }
 
 void produceOutput(Hist2Pair out, const std::string& outputpath)
@@ -142,16 +151,35 @@ void produceOutput(Hist2Pair out, const std::string& outputpath)
     writeToCanvas(out.num,out.xlabel,ylabel,outputfilename);
     writeToCanvas(out.den,out.xlabel,ylabel,outputfilename);
     writeToCanvas2D(&eff,out.xlabel,out.ylabel,outputfilename);
+
+    out.num->Write();
+    out.den->Write();
+    eff.Write();
 }
 
 #if !defined(__CLING__)
 
 int main(int argc, char **argv)
 {
-    if (argc==4)
-        PlotEff(argv[1],argv[2],argv[3]);
+    std::string flags= argv[1];
+    const char* inputs[32];
+    for(int i=0;i< argc-4;i++) inputs[i]=argv[i+3];
+    if (flags=="-multi")
+    {
+        int inputNum= argc -5;
+        if (inputNum>1)
+            MultiPlotEff(argv[2],inputs,argv[inputNum+4],inputNum);
+        else
+            std::cerr << "Wrong number of parameters:\nUsage:\nmainpath, trigger0, trigger1... , output\n";
+    }
     else
-        std::cerr << "Wrong number of parameters:\nUsage:\ninput , output, {lowpt,highpt}\n";
+    {
+        if (argc==4)
+            PlotEff(argv[1],argv[2],argv[3]);
+        else
+            std::cerr << "Wrong number of parameters:\nUsage:\ninput , output, {lowpt,highpt}\n";
+    }
+    
     return 0;
 }
 

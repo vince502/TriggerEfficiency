@@ -4,6 +4,9 @@
 #include<iostream>
 
 #include"TCanvas.h"
+#include"THStack.h"
+#include"TMultiGraph.h"
+#include"TGraphAsymmErrors.h"
 
 TFile* OpenFile(const std::string& filename)
 {
@@ -35,6 +38,30 @@ TTree* OpenTree(TFile* file ,const std::string& treeName)
         std::cerr << "Tree '" << treeName << "' does not exist.\n";
     }
     return tree;
+}
+
+TH1* OpenTH1(TFile* file ,const std::string& histName)
+{
+    std::cout << "reading histogram '" << histName << "' from file '" << file->GetName() << "'\n";
+    TH1* hist =nullptr;
+    file->GetObject(histName.data(),hist);
+    if (hist==nullptr)
+    {
+        std::cerr << "TH1 '" << histName << "' does not exist.\n";
+    }
+    return hist;
+}
+
+TEfficiency* OpenTEff(TFile* file ,const std::string& histName)
+{
+    std::cout << "reading efficiency histogram '" << histName << "' from file '" << file->GetName() << "'\n";
+    TEfficiency* hist =nullptr;
+    file->GetObject(histName.data(),hist);
+    if (hist==nullptr)
+    {
+        std::cerr << "TEfficiency '" << histName << "' does not exist.\n";
+    }
+    return hist;
 }
 
 void writeToCanvas(TH1* hist,const std::string& xname,const std::string& yname, const std::string& outname, bool yLog)
@@ -81,6 +108,51 @@ void writeToCanvas2D(TEfficiency* hist,const std::string& xname,const std::strin
     hist->SetTitle(title.data());
     hist->Draw("COLZ");
     canvas.SaveAs(outputFilename.data());
+}
+
+void writeToCanvas(std::vector<TH1*>& hists,const std::string& title,const std::string& xname,const std::string& yname, const std::string& outname, bool yLog)
+{
+    TCanvas canvas((title+"_plot").data(),"",canvasWidth,canvasHeight);
+    canvas.cd();
+
+    TPad pad("pad","fit", padSizes[0], padSizes[1], padSizes[2], padSizes[3]);
+    pad.Draw();
+    pad.cd();
+    if (yLog) pad.SetLogy();
+    THStack stack((title+"_stack").data(),(title+" plot").data());
+    for(auto hist : hists)
+    {
+        stack.Add(hist);
+    }
+    stack.Draw("nostack");
+    stack.GetYaxis()->SetTitle(yname.data());
+    stack.GetXaxis()->SetTitle(xname.data());
+    pad.BuildLegend(0.7,0.8,1.0,1.0);
+    canvas.SaveAs(outname.data());
+}
+
+void writeToCanvas(std::vector<TEfficiency*>& hists,const std::string& title,const std::string& xname,const std::string& yname, const std::string& outname)
+{
+    TCanvas canvas((title+"_plot").data(),"",canvasWidth,canvasHeight);
+    canvas.cd();
+
+    TPad pad("pad","fit", padSizes[0], padSizes[1], padSizes[2], padSizes[3]);
+    pad.Draw();
+    pad.cd();
+
+    TMultiGraph* mg= new TMultiGraph(title.data(),title.data());
+
+    int i=1;
+    for(auto hist : hists)
+    {
+        hist->SetLineColor(i);
+        mg->Add(hist->CreateGraph());
+        i++;
+    }
+    mg->Draw("AP");
+
+    pad.BuildLegend(0.7,0.8,1.0,1.0);
+    canvas.SaveAs(outname.data());
 }
 
 TH1* createTH1(const std::string& name,const std::string& title, const std::vector<double>& bins)

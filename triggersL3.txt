@@ -1,0 +1,3 @@
+HLT_HIL3SingleMu0_MinBias_v1
+HLT_HIL3SingleMu0_L1Mu0Cosmic_v1
+HLT_HIL3SingleMu0_L1Mu0Open_v1

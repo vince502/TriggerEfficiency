@@ -156,8 +156,8 @@ Output allocateOutput()
 {
     Output out;
 
-    out.pass = new TTree("pass","passing dimuons");
-    out.total = new TTree("total","total dimuons");
+    out.pass = new TTree("pass","passing muons");
+    out.total = new TTree("total","total muons");
 
     return out;
 }
