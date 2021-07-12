@@ -26,5 +26,5 @@ inside that directory there is one directory named as each trigger, with the res
 Efficiencies are calculated as a function of pt, rapidity, centrality. Also there is separated efficiencies calculated for mid barrel and forward region as a function of pt.
 Also a plot superimposed efficiencies as function of pt per trigger level is output in this directory.
 
-Similarly the file trigeff.sh can be configured and ran to calculate trigger efficiency of just one trigger
+Similarly the bash script trigeff.sh can be configured and ran to calculate trigger efficiency of just one trigger
 at a time.
