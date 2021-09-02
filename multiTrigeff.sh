@@ -1,10 +1,10 @@
 
 #path to reco file
-ONIAFILEPATH="../rootfiles/datasets/Run3Pre_dilepton/Oniatree_MC_miniAOD_PG_Pt_3_100_Hydjet_5p02TeV_cmssw11_2_2_Run3Cond_merged.root"
+ONIAFILEPATH="../rootfiles/datasets/trigger/OniaTree_Run3_2021_PG_3_100_merged.root"
 #path to hltobj triggers file
-TRIGGERFILEPATH="../rootfiles/datasets/Run3Prep_DileptonHLT_2021/openHLT_Run3HLT_Dilepton_MC_Pt_0p5_100.root"
+TRIGGERFILEPATH="../rootfiles/datasets/trigger/HLT/HLT_MC_ParticleGun_Muon_Pt_3_100_1130pre5_v1.root"
 #path to directory to place output
-OUTPUTPATH="../rootfiles/analysis/triggerStudy"
+OUTPUTPATH="../rootfiles/analysis/triggerStudy3"
 #reco file is low pt or high pt : "lowpt" or "highpt"
 PTRANGE="highpt"
 #maximum number of cores/threads to use simultaneusly, one core/thread process one trigger

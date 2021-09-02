@@ -13,6 +13,8 @@ bool isMatched(const TLorentzVector* recoMuon, const HltobjEntry* onMuons)
         float deltaPhi= phi - onMuons->phi[i];
         if (sqrt(deltaEta*deltaEta+deltaPhi*deltaPhi) < dRthreshold)
         {
+            if (!dPtThresholdEnabled) 
+                return true;
             if (abs(( onMuons->pt[i] - pt )/pt) < dPtThreshold) 
                 return true;
         }

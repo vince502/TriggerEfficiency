@@ -35,6 +35,10 @@ void TrigEff(const char* oniaFilename, const char* triggerFilename, const char* 
     //init inputs
     Input input;
 
+    //check if is L1 using the trigger name
+    input.isL1=std::string(triggerName).find("HLT_HIL1")!= std::string::npos;
+    if (input.isL1) std::cout <<"L1 trigger detected\n";
+
     input.oniaTree =OpenTree(oniaFile,oniaTreeName);
     input.hltanalysisTree=OpenTree(triggerFile,hltanalysisTreeName);
 
@@ -111,13 +115,20 @@ void Process(Input* input, Output* output)
 
     for(Long64_t entry=0;entry< oniaEntryNum;entry++)
     {
-        if ((entry % entryStep)==0) cout << "processing entries : " << round((100.0f*entry)/oniaEntryNum) << "% " << entry << " / " << oniaEntryNum << '\n';
-
+        if ((entry % entryStep)==0)
+        {
+            cout << "processing entries : " << round((100.0f*entry)/oniaEntryNum)
+                 << "% " << entry << " / " << oniaEntryNum << '\n';
+        }
+            
         const OniaInput* oniaInput = onia.readEntry(entry);
         
         for(int iMu=0;iMu<oniaInput->reco_mu_size;iMu++)
         {
-            const TLorentzVector* mu= (TLorentzVector*) oniaInput->reco_mu_mom4->At(iMu);
+            const TLorentzVector* mu= input->isL1 ? 
+                    (TLorentzVector*) oniaInput->reco_mu_L1_mom4->At(iMu) 
+                :   (TLorentzVector*) oniaInput->reco_mu_mom4->At(iMu);
+            
             const float pt= mu->Pt();
             const float y= mu->Rapidity();
             const float eta= mu->Eta();

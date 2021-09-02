@@ -16,9 +16,10 @@ struct Input
     TTree* oniaTree;
     TTree* hltanalysisTree;
     TTree* hltobjectTree;
+    bool isL1;
 };
 
 const char oniaTreeName[]="hionia/myTree";
-const char hltanalysisTreeName[] = "hltbitanalysis/HltTree";
+const char hltanalysisTreeName[] = "hltanalysis/HltTree";
 const char hltobjDirectoryName[] = "hltobject/";
 

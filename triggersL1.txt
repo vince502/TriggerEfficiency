@@ -1,5 +1,4 @@
-HLT_HIL1SingleMu0Cosmics_v1
-HLT_HIL1SingleMu0DQ_v1
-HLT_HIL1SingleMu0MinBias_v1
-HLT_HIL1SingleMu0Open_v1
-HLT_HIL1SingleMu0_v1
+HLT_HIL1SingleMu0Cosmics_v
+HLT_HIL1SingleMu0_v
+HLT_HIL1SingleMu0DQ_v
+HLT_HIL1SingleMu0Open_v

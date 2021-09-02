@@ -34,6 +34,7 @@ void HltanalysisInput::registerInput(TreeReader* reader)
 OniaInput::OniaInput()
 {
     reco_mu_mom4 = new TClonesArray("TLorentzVector");
+    reco_mu_L1_mom4 = new TClonesArray("TLorentzVector");
 }
 
 void OniaInput::registerInput(TreeReader* reader)
@@ -48,11 +49,13 @@ void OniaInput::registerInput(TreeReader* reader)
     reader->addInput("Reco_mu_dxy",&reco_mu_dxy);
     reader->addInput("Reco_mu_dz",&reco_mu_dz);
     reader->addInput("Reco_mu_4mom",&(reco_mu_mom4));
+    reader->addInput("Reco_mu_L1_4mom", &(reco_mu_L1_mom4));
 }
 
 OniaInput::~OniaInput()
 {
     delete reco_mu_mom4;
+    delete reco_mu_L1_mom4;
 }
 
 void OniaOutput::registerOutput(TreeWriter* writer)

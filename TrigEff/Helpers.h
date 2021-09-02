@@ -8,6 +8,7 @@
 
 const float dRthreshold = 0.3f;
 const float dPtThreshold = 0.3f;
+const bool dPtThresholdEnabled = false;
 
 struct HltobjEntry
 {

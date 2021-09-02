@@ -162,15 +162,18 @@ void produceOutput(Hist2Pair out, const std::string& outputpath)
 int main(int argc, char **argv)
 {
     std::string flags= argv[1];
-    const char* inputs[32];
-    for(int i=0;i< argc-4;i++) inputs[i]=argv[i+3];
+
     if (flags=="-multi")
     {
-        int inputNum= argc -5;
-        if (inputNum>1)
-            MultiPlotEff(argv[2],inputs,argv[inputNum+4],inputNum);
+        const char* inputs[64];
+        const int numOfTriggers=argc-4;
+        for(int i=0;i< numOfTriggers;i++) 
+            inputs[i]=argv[i+3];
+
+        if (numOfTriggers>1)
+            MultiPlotEff(argv[2],inputs,argv[argc-1],numOfTriggers);
         else
-            std::cerr << "Wrong number of parameters:\nUsage:\nmainpath, trigger0, trigger1... , output\n";
+            std::cerr << "Wrong number of parameters:\nUsage:\nmainpath trigger0 trigger1...  output\n";
     }
     else
     {

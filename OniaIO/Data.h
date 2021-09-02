@@ -40,6 +40,7 @@ struct OniaInput
     Float_t reco_mu_dxy[maxArraySize];
     Float_t reco_mu_dz[maxArraySize];
     TClonesArray* reco_mu_mom4;
+    TClonesArray* reco_mu_L1_mom4;
 
     void registerInput(TreeReader* reader);
     OniaInput();
