@@ -80,7 +80,7 @@ void readPass(TFile* inputFile, Output* output)
         output->cent.num->Fill(input->cent);
         output->y.num->Fill(input->y);
         output->pt_y.num->Fill(input->y,input->pt);
-        if (input->eta > endcapRap) 
+        if (fabs(input->eta) > endcapRap) 
             output->pt_fwd.num->Fill(input->pt);
         else
             output->pt_mid.num->Fill(input->pt);
