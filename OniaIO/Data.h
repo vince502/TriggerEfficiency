@@ -57,6 +57,10 @@ struct OniaOutput
     Float_t m;
     Float_t y;
     Float_t eta;
+    Float_t pt_mi;
+    Float_t pt_pl;
+    Float_t eta_mi;
+    Float_t eta_pl;
     Float_t cent;
 
     void registerInput(TreeReader* reader);

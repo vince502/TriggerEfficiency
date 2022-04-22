@@ -150,8 +150,11 @@ void Process(Input* input, Output* output)
             const float y= mu->Rapidity();
             const float eta= mu->Eta();
             const int cent= oniaInput->centrality;
+	//   const auto res = indexer.find(oniaInput->event)->second;
+	 //   cout << pt << res.pt.at(iMu) <<std::endl;
 
             if (pt>100.0f) continue;
+	    //if (abs(y)>2.4 || abs(y) <1.6) continue; 	
 	    if(!(input->isDBmu))
 	    {
                 if (!isInAcceptance(pt,abs(eta))) continue;
@@ -160,7 +163,7 @@ void Process(Input* input, Output* output)
 	    }
 	    if(input->isDBmu)
 	    {
-                if (!(isInAcceptance((const float) simu_pl->Pt(),abs( (const float) simu_pl->Eta())) && isInAcceptance((const float) simu_pl->Pt(),abs( (const float) simu_pl->Eta())))) continue;
+                if (!(isInAcceptance((const float) simu_pl->Pt(),abs( (const float) simu_pl->Eta())) && isInAcceptance((const float) simu_mi->Pt(),abs( (const float) simu_mi->Eta())))) continue;
             
                 if (!(isPassQualityCuts(oniaInput,oniaInput->reco_QQ_mumi_idx[iMu]) && isPassQualityCuts(oniaInput,oniaInput->reco_QQ_mupl_idx[iMu]))) continue;
 	    }
@@ -171,11 +174,17 @@ void Process(Input* input, Output* output)
             total.output.cent = cent;
             total.output.m= mu->M();
             total.output.eta=eta;
+	    if(input->isDBmu){	
+	    total.output.pt_pl = simu_pl -> Pt();
+	    total.output.pt_mi = simu_mi -> Pt();
+	    total.output.eta_pl = simu_pl -> Eta();
+	    total.output.eta_mi = simu_mi -> Eta();
+	    }
             total.writeEntry();
 
             //read hltobj, if not found, continue
-            const auto hltobjFound= indexer.find(oniaInput->event);
-            if (hltobjFound== indexer.end()) continue;
+        const auto hltobjFound= indexer.find(oniaInput->event);
+        if (hltobjFound== indexer.end()) continue;
 	    if(!(input->isDBmu))
 	    {
                 if (isMatched(mu,&(hltobjFound->second)))

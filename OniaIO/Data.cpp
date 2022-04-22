@@ -50,7 +50,7 @@ void OniaInput::registerInput(TreeReader* reader)
     reader->addInput("Reco_mu_nPixWMea",&reco_mu_nPixWMea);
     reader->addInput("Reco_mu_dxy",&reco_mu_dxy);
     reader->addInput("Reco_mu_dz",&reco_mu_dz);
-    reader->addInput("Reco_mu_4mom",&(reco_mu_mom4));
+   // reader->addInput("Reco_mu_4mom",&(reco_mu_mom4));
     reader->addInput("Reco_mu_L1_4mom", &(reco_mu_L1_mom4));
     reader->addInput("Reco_QQ_4mom",&(reco_QQ_mom4));
     reader->addInput("Reco_QQ_mupl_idx",&reco_QQ_mupl_idx);
@@ -71,7 +71,11 @@ void OniaOutput::registerOutput(TreeWriter* writer)
     writer->addOutput("y",&y);
     writer->addOutput("cent",&cent);
     writer->addOutput("eta",&eta);
+    writer->addOutput("pt_pl",&pt_pl);
+    writer->addOutput("pt_mi",&pt_mi);
     writer->addOutput("m",&m);
+    writer->addOutput("eta_pl",&eta_pl);
+    writer->addOutput("eta_mi",&eta_mi);
 }
 
 void OniaOutput::registerInput(TreeReader* reader)

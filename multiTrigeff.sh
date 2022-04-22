@@ -1,12 +1,41 @@
-
 #path to reco file
-ONIAFILEPATH="../rootfiles/datasets/trigger/OniaTree_Run3_2021_PG_0p5_3_merged.root"
+#ONIAFILEPATH="../rootfiles/datasets/trigger/Oniatree_Jpsi_CMSSW_11_3_2.root" 
+#ONIAFILEPATH="../rootfiles/datasets/trigger/Oniatree_Jpsi_EMBEDDED_CMSSW_11_3_2.root"
+#ONIAFILEPATH="../rootfiles/datasets/trigger/Oniatree_Upsilon_CMSSW_11_3_2_211122_v1.root"
+#ONIAFILEPATH="../rootfiles/datasets/trigger/Oniatree_UpsilonHydjet_EmbeddedSample_CMSSW_11_3_2_20220210.root"
+#ONIAFILEPATH="../rootfiles/datasets/trigger/OniaTree_SingleMuGun_HydjetEmb_Run32021_3_100_merged.root"
+
 #path to hltobj triggers file
-TRIGGERFILEPATH="../rootfiles/datasets/trigger/HLT/HLT_MC_ParticleGun_Muon_Pt_0p5_3_1130pre5_v1.root"
+#TRIGGERFILEPATH="../rootfiles/datasets/trigger/HLT/openHLT_DileptMu_JPsi_v1.root"
+#TRIGGERFILEPATH="../rootfiles/datasets/trigger/HLT/openHLT_DileptMu_JPsi_Embedded_v1.root"
+#TRIGGERFILEPATH="../rootfiles/datasets/trigger/HLT/openHLT_DileptMu_Up_20211126_v1.root"
+#TRIGGERFILEPATH="../rootfiles/datasets/trigger/HLT/openHLT_DileptMu_Upsilon_Embedded_20220207_v1.root"
+#TRIGGERFILEPATH="../rootfiles/datasets/trigger/HLT/openHLT_output_muonL3_legacy_PGHdj_highpt.root"
+
+#for CMSSW_12_3_0_pre1 samples 
+#path to reco file
+#ONIAFILEPATH="../rootfiles/datasets/trigger/Oniatree_Jpsi_CMSSW_11_3_2.root" 
+ONIAFILEPATH="../rootfiles/datasets/trigger/Oniatree_DATA2018MBPD2_CMSSW_12_3_0.root"
+#ONIAFILEPATH="../rootfiles/datasets/trigger/Oniatree_Upsilon_CMSSW_11_3_2_211122_v1.root"
+#ONIAFILEPATH="../rootfiles/datasets/trigger/Oniatree_UpsilonHydjet_EmbeddedSample_CMSSW_11_3_2_20220210.root"
+#ONIAFILEPATH="../rootfiles/datasets/trigger/OniaTree_SingleMuGun_HydjetEmb_Run32021_3_100_merged.root"
+
+#path to hltobj triggers file
+#TRIGGERFILEPATH="../rootfiles/datasets/trigger/HLT/openHLT_DileptMu_JPsi_v1.root"
+#TRIGGERFILEPATH="../rootfiles/datasets/trigger/HLT/openHLT_HLTMU_121X_NewImpl_JPsiEMB.root"
+TRIGGERFILEPATH="../rootfiles/datasets/trigger/HLT/openHLT_data2018_newUnstable.root"
+#TRIGGERFILEPATH="../rootfiles/datasets/trigger/HLT/openHLT_DileptMu_Up_20211126_v1.root"
+#TRIGGERFILEPATH="../rootfiles/datasets/trigger/HLT/openHLT_DileptMu_Upsilon_Embedded_20220207_v1.root"
+#TRIGGERFILEPATH="../rootfiles/datasets/trigger/HLT/openHLT_output_muonL3_legacy_PGHdj_highpt.root"
+
 #path to directory to place output
-OUTPUTPATH="../rootfiles/analysis/triggerStudy3"
+#OUTPUTPATH="../rootfiles/analysis/JPsi_HydjetEmbedded_NewImpl_CMSSW_12_3_0_pre_20220322_test1"
+OUTPUTPATH="../rootfiles/analysis/Triggerstudy_data2018_CMSSW_12_3_0_220421_v5"
+#OUTPUTPATH="../rootfiles/analysis/Upsilon_20220210_test1"
+#OUTPUTPATH="../rootfiles/analysis/SingleMu_legacy_PGHdj_highpt"
+#OUTPUTPATH="../rootfiles/analysis/JPsi_test1"
 #reco file is low pt or high pt : "lowpt" or "highpt"
-PTRANGE="lowpt"
+PTRANGE="highpt"
 #maximum number of cores/threads to use simultaneusly, one core/thread process one trigger
 MAXJOBS=7
 
