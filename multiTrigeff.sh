@@ -15,22 +15,25 @@
 #for CMSSW_12_3_0_pre1 samples 
 #path to reco file
 #ONIAFILEPATH="../rootfiles/datasets/trigger/Oniatree_Jpsi_CMSSW_11_3_2.root" 
-ONIAFILEPATH="../rootfiles/datasets/trigger/Oniatree_DATA2018MBPD2_CMSSW_12_3_0.root"
+#ONIAFILEPATH="../rootfiles/datasets/trigger/Oniatree_DATA2018MBPD2_CMSSW_12_3_0.root"
 #ONIAFILEPATH="../rootfiles/datasets/trigger/Oniatree_Upsilon_CMSSW_11_3_2_211122_v1.root"
+ONIAFILEPATH="../rootfiles/datasets/trigger/Oniatree_Jpsi_Embedded_CMSSW_12_3_0_pre1_20220312.root"
 #ONIAFILEPATH="../rootfiles/datasets/trigger/Oniatree_UpsilonHydjet_EmbeddedSample_CMSSW_11_3_2_20220210.root"
 #ONIAFILEPATH="../rootfiles/datasets/trigger/OniaTree_SingleMuGun_HydjetEmb_Run32021_3_100_merged.root"
 
 #path to hltobj triggers file
 #TRIGGERFILEPATH="../rootfiles/datasets/trigger/HLT/openHLT_DileptMu_JPsi_v1.root"
 #TRIGGERFILEPATH="../rootfiles/datasets/trigger/HLT/openHLT_HLTMU_121X_NewImpl_JPsiEMB.root"
-TRIGGERFILEPATH="../rootfiles/datasets/trigger/HLT/openHLT_data2018_newUnstable.root"
+#TRIGGERFILEPATH="../rootfiles/datasets/trigger/HLT/openHLT_data2018_newUnstable.root"
+TRIGGERFILEPATH="/eos/home-s/soohwan/HLT-Dev_Run3/CMSSW_123X_build_v2/CMSSW_12_3_0/src/HLTrigger/Configuration/test/workstation/openHLT_Gmenu_JPsiEMB_v1230.root"
 #TRIGGERFILEPATH="../rootfiles/datasets/trigger/HLT/openHLT_DileptMu_Up_20211126_v1.root"
 #TRIGGERFILEPATH="../rootfiles/datasets/trigger/HLT/openHLT_DileptMu_Upsilon_Embedded_20220207_v1.root"
 #TRIGGERFILEPATH="../rootfiles/datasets/trigger/HLT/openHLT_output_muonL3_legacy_PGHdj_highpt.root"
 
 #path to directory to place output
 #OUTPUTPATH="../rootfiles/analysis/JPsi_HydjetEmbedded_NewImpl_CMSSW_12_3_0_pre_20220322_test1"
-OUTPUTPATH="../rootfiles/analysis/Triggerstudy_data2018_CMSSW_12_3_0_220421_v5"
+#OUTPUTPATH="../rootfiles/analysis/Triggerstudy_data2018_CMSSW_12_3_0_220421_v5"
+OUTPUTPATH="/eos/home-s/soohwan/HLT-Dev_Run3/CMSSW_123X_build_v2/CMSSW_12_3_0/src/HLTrigger/Configuration/test/workstation/Gmenu_trig_eff"
 #OUTPUTPATH="../rootfiles/analysis/Upsilon_20220210_test1"
 #OUTPUTPATH="../rootfiles/analysis/SingleMu_legacy_PGHdj_highpt"
 #OUTPUTPATH="../rootfiles/analysis/JPsi_test1"
@@ -41,9 +44,9 @@ MAXJOBS=7
 
 
 #list of triggers to process, listed in file triggersLx.txt
-TRIGGERSL1=$( cat triggersL1.txt )
-TRIGGERSL2=$( cat triggersL2.txt )
-TRIGGERSL3=$( cat triggersL3.txt )
+TRIGGERSL1=$( cat triggersL1_v1230.txt )
+TRIGGERSL2=$( cat triggersL2_v1230.txt )
+TRIGGERSL3=$( cat triggersL3_v1230.txt )
 TRIGGERS=( ${TRIGGERSL1[@]} ${TRIGGERSL2[@]} ${TRIGGERSL3[@]} )
 
 OUTPUTDIR="${OUTPUTPATH}/$( basename ${ONIAFILEPATH%.*})"
