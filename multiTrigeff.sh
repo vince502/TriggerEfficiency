@@ -31,12 +31,12 @@ TRIGGERFILEPATH="/eos/home-s/soohwan/HLT-Dev_Run3/CMSSW_123X_build_v2/CMSSW_12_3
 #TRIGGERFILEPATH="../rootfiles/datasets/trigger/HLT/openHLT_output_muonL3_legacy_PGHdj_highpt.root"
 
 #path to directory to place output
-#OUTPUTPATH="../rootfiles/analysis/JPsi_HydjetEmbedded_NewImpl_CMSSW_12_3_0_pre_20220322_test1"
+#OUTPUTPATH="../rootfiles/analysis/Triggerstudy_JPsi_CMSSW_11_3_2_220427_v2"
 #OUTPUTPATH="../rootfiles/analysis/Triggerstudy_data2018_CMSSW_12_3_0_220421_v5"
-OUTPUTPATH="/eos/home-s/soohwan/HLT-Dev_Run3/CMSSW_123X_build_v2/CMSSW_12_3_0/src/HLTrigger/Configuration/test/workstation/Gmenu_trig_eff"
+#OUTPUTPATH="/eos/home-s/soohwan/HLT-Dev_Run3/CMSSW_123X_build_v2/CMSSW_12_3_0/src/HLTrigger/Configuration/test/workstation/Gmenu_trig_eff"
 #OUTPUTPATH="../rootfiles/analysis/Upsilon_20220210_test1"
 #OUTPUTPATH="../rootfiles/analysis/SingleMu_legacy_PGHdj_highpt"
-#OUTPUTPATH="../rootfiles/analysis/JPsi_test1"
+OUTPUTPATH="../rootfiles/analysis/Triggertest1230"
 #reco file is low pt or high pt : "lowpt" or "highpt"
 PTRANGE="highpt"
 #maximum number of cores/threads to use simultaneusly, one core/thread process one trigger
@@ -73,7 +73,8 @@ do
     JOBNUM="${#JOBS[@]}"
     if [ $MAXJOBS = $JOBNUM ]
     then
-        wait -n
+#        wait -n
+	wait
     fi
 done
 wait

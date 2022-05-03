@@ -126,15 +126,21 @@ void Process(Input* input, Output* output)
         const OniaInput* oniaInput = onia.readEntry(entry);
         int object_size ;
 	object_size = input->isDBmu ?  oniaInput->reco_QQ_size : oniaInput->reco_mu_size;
-        for(int iMu=0;iMu< object_size;iMu++)
+        const auto hltobjFound= indexer.find(oniaInput->event);
+        if (hltobjFound== indexer.end()) continue;
+	for(int iMu=0;iMu< object_size;iMu++)
         {
+//	    cout << "running candidate " << iMu << " in entry " << entry << '\n';
             const TLorentzVector* mu,* simu_pl,* simu_mi;
+//	cout << "debug HLT if not DBMU" << std::endl;
 	    if(!(input->isDBmu))
 	    {
             mu= input->isL1 ? 
                     (TLorentzVector*) oniaInput->reco_mu_L1_mom4->At(iMu) 
                 :   (TLorentzVector*) oniaInput->reco_mu_mom4->At(iMu);
 	    }
+
+//	cout << "debug HLT if DBMU" << std::endl;
 	    if(input->isDBmu)
 	    {
             mu  =    (TLorentzVector*) oniaInput->reco_QQ_mom4->At(iMu);
@@ -145,7 +151,9 @@ void Process(Input* input, Output* output)
                     (TLorentzVector*) oniaInput->reco_mu_L1_mom4->At(oniaInput->reco_QQ_mumi_idx[iMu]) 
                 :   (TLorentzVector*) oniaInput->reco_mu_mom4->At(oniaInput->reco_QQ_mumi_idx[iMu]);
 	    }
+
             
+//	cout << "debug HLT fetch variables" << std::endl;
             const float pt= mu->Pt();
             const float y= mu->Rapidity();
             const float eta= mu->Eta();
@@ -153,6 +161,7 @@ void Process(Input* input, Output* output)
 	//   const auto res = indexer.find(oniaInput->event)->second;
 	 //   cout << pt << res.pt.at(iMu) <<std::endl;
 
+//	cout << "debug HLT selection" << std::endl;
             if (pt>100.0f) continue;
 	    //if (abs(y)>2.4 || abs(y) <1.6) continue; 	
 	    if(!(input->isDBmu))
@@ -168,6 +177,7 @@ void Process(Input* input, Output* output)
                 if (!(isPassQualityCuts(oniaInput,oniaInput->reco_QQ_mumi_idx[iMu]) && isPassQualityCuts(oniaInput,oniaInput->reco_QQ_mupl_idx[iMu]))) continue;
 	    }
 
+//	cout << "debug HLT output stream" << std::endl;
             //Passed acceptance and quality cuts
             total.output.pt=pt;
             total.output.y=y;
@@ -181,10 +191,9 @@ void Process(Input* input, Output* output)
 	    total.output.eta_mi = simu_mi -> Eta();
 	    }
             total.writeEntry();
-
+//	cout << "debug HLT find index" << std::endl;
             //read hltobj, if not found, continue
-        const auto hltobjFound= indexer.find(oniaInput->event);
-        if (hltobjFound== indexer.end()) continue;
+ 
 	    if(!(input->isDBmu))
 	    {
                 if (isMatched(mu,&(hltobjFound->second)))
