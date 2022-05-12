@@ -23,15 +23,18 @@ bool isMatched(const TLorentzVector* recoMuon, const HltobjEntry* onMuons)
     return false;
 }
 
-bool isInAcceptance(float pt, float abseta)
-{
-	//	if (abseta >2.4) return false;
-	//	if (abseta <2.4) return pt>4; 
-
-	if (abseta > 2.4 ) return false; //JPsi cut
-	if (abseta < 1.2 ) return pt >3.5;
-	if (1.2<abseta && abseta < 2.1 ) return pt >= 5.47-1.89*abseta;
-	return pt >1.5;
+bool isInAcceptance(float pt, float abseta, bool isup)
+{       
+	if(isup){
+		if (abseta >2.4) return false;
+		if (abseta <2.4) return pt>4; 
+	}
+	else{
+		if (abseta > 2.4 ) return false; //JPsi cut
+		if (abseta < 1.2 ) return pt >3.5;
+		if (1.2<abseta && abseta < 2.1 ) return pt >= 5.47-1.89*abseta;
+		return pt >1.5;
+	}
 }
 bool isPassQualityCuts(const OniaInput* in, int index)
 {

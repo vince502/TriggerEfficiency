@@ -14,12 +14,12 @@ using std::cout;
 using std::cerr;
 using HltIndex=std::unordered_map<Long64_t,HltobjEntry>;
 
-void Process(Input* input, Output* output);
+void Process(Input* input, Output* output,bool isup);
 HltIndex generateIndexer(Input* input);
 
 Output allocateOutput();
 
-void TrigEff(const char* oniaFilename, const char* triggerFilename, const char* triggerName, const char* outputFilename)
+void TrigEff(const char* oniaFilename, const char* triggerFilename, const char* triggerName, const char* outputFilename, const char* type)
 {
     //open and create required files
     TFile* oniaFile = OpenFile(oniaFilename);
@@ -31,7 +31,7 @@ void TrigEff(const char* oniaFilename, const char* triggerFilename, const char* 
     std::string outFilename=outputFilename;
 
     TFile* outputFile = CreateFile(outFilename+"/output.root");
-
+    bool isup = std::string(type).find("Up") != std::string::npos;
     //init inputs
     Input input;
 
@@ -52,7 +52,7 @@ void TrigEff(const char* oniaFilename, const char* triggerFilename, const char* 
         //init outputs
         Output output=allocateOutput();
 
-        Process(&input,&output);
+        Process(&input,&output,isup);
 
         output.pass->Write();
         output.total->Write();
@@ -103,7 +103,7 @@ HltIndex generateIndexer(Input* input)
 
 }
 
-void Process(Input* input, Output* output)
+void Process(Input* input, Output* output, bool isup)
 {
     Reader<OniaInput> onia(input->oniaTree);
 
@@ -163,16 +163,16 @@ void Process(Input* input, Output* output)
 
 //	cout << "debug HLT selection" << std::endl;
             if (pt>100.0f) continue;
-	    //if (abs(y)>2.4 || abs(y) <1.6) continue; 	
+	    //if (abs(y)>2.4 || abs(y) <1.6) continue; 
 	    if(!(input->isDBmu))
 	    {
-                if (!isInAcceptance(pt,abs(eta))) continue;
+                if (!isInAcceptance(pt,abs(eta),isup)) continue;
             
                 if (!isPassQualityCuts(oniaInput,iMu)) continue;
 	    }
 	    if(input->isDBmu)
 	    {
-                if (!(isInAcceptance((const float) simu_pl->Pt(),abs( (const float) simu_pl->Eta())) && isInAcceptance((const float) simu_mi->Pt(),abs( (const float) simu_mi->Eta())))) continue;
+                if (!(isInAcceptance((const float) simu_pl->Pt(),abs( (const float) simu_pl->Eta()),isup) && isInAcceptance((const float) simu_mi->Pt(),abs( (const float) simu_mi->Eta()),isup))) continue;
             
                 if (!(isPassQualityCuts(oniaInput,oniaInput->reco_QQ_mumi_idx[iMu]) && isPassQualityCuts(oniaInput,oniaInput->reco_QQ_mupl_idx[iMu]))) continue;
 	    }
@@ -230,10 +230,10 @@ Output allocateOutput()
 
 int main(int argc, char **argv)
 {
-    if (argc==5)
-        TrigEff(argv[1],argv[2],argv[3],argv[4]);
+    if (argc==6)
+        TrigEff(argv[1],argv[2],argv[3],argv[4],argv[5]);
     else
-        cerr << "Wrong number of parameters:\nUsage:\nOnia Filename , Trigger Filename, Trigger Name, OutputFilename\n";
+        cerr << "Wrong number of parameters:\nUsage:\nOnia Filename , Trigger Filename, Trigger Name, OutputFilename\n, Type of particles\n";
     return 0;
 }
 

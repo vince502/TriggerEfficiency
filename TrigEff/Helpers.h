@@ -19,7 +19,7 @@ struct HltobjEntry
 };
 
 bool isMatched(const TLorentzVector* recoMuon, const HltobjEntry* onMuons);
-bool isInAcceptance(float pt, float abseta);
+bool isInAcceptance(float pt, float abseta,bool isup);
 bool isPassQualityCuts(const OniaInput* in, int index);
 
 #endif

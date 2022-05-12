@@ -9,7 +9,7 @@ TRIGGERNAME=${3:-"HLT_HIL1SingleMu0_v1"}
 OUTPUTPATH=${4:-"../rootfiles/analysis/triggerStudy/HLT_HIL1SingleMu0_v1"}
 #reco file is low pt or high pt : "lowpt" or "highpt"
 PTRANGE=${5:-"highpt"}
-
+TYPE=${6:-"Up"}
 mkdir -p ${OUTPUTPATH}
 
 echo "Trigger efficiency study"
@@ -20,6 +20,6 @@ echo "reading hltobj file '${TRIGGERFILEPATH}'"
 echo "output to:"
 echo "  ${OUTPUTPATH}/$( basename $ONIAFILEPATH)"
 
-./TrigEff/trigeff ${ONIAFILEPATH} ${TRIGGERFILEPATH} ${TRIGGERNAME} $OUTPUTPATH
+./TrigEff/trigeff ${ONIAFILEPATH} ${TRIGGERFILEPATH} ${TRIGGERNAME} $OUTPUTPATH $TYPE
 echo "generating plots for ${TRIGGERNAME}"
-./PlotEff/ploteff "${OUTPUTPATH}/output.root" "${OUTPUTPATH}" ${PTRANGE}
+./PlotEff/ploteff "${OUTPUTPATH}/output.root" "${OUTPUTPATH}" ${PTRANGE} $TYPE
