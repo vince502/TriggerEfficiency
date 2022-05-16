@@ -21,5 +21,6 @@ struct HltobjEntry
 bool isMatched(const TLorentzVector* recoMuon, const HltobjEntry* onMuons);
 bool isInAcceptance(float pt, float abseta,bool isup);
 bool isPassQualityCuts(const OniaInput* in, int index);
-
+float findNcoll(int hiBin);
+Int_t getHiBinFromhiHF(const Double_t hiHF);
 #endif

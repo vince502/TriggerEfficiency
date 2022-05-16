@@ -45,7 +45,6 @@ struct OniaInput
     TClonesArray* reco_mu_mom4;
     TClonesArray* reco_mu_L1_mom4;
     TClonesArray* reco_QQ_mom4;
-
     void registerInput(TreeReader* reader);
     OniaInput();
     ~OniaInput();
